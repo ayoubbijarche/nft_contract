@@ -14,12 +14,11 @@ const MAX_SYMBOL_LEN: usize = 10;
 
 
 
-
 #[program]
 pub mod nft_project {
     use super::*;
 
-    pub fn initialize(ctx: Context<CreateNFT>, mint : Pubkey , owner : Pubkey , metadata_uri : String , symbol : String , seller_fee_basis : u16 ) -> Result<()> {
+    pub fn initialize(ctx: Context<CreateNFT>, mint : Pubkey , owner : Pubkey , metadata_uri : String , symbol : String , seller_fee_basis : u16 )  -> Result<()>{
         
         let init_nft = &mut ctx.accounts.nft_acc;
         init_nft.mint = mint;
@@ -28,6 +27,14 @@ pub mod nft_project {
         init_nft.symbol = symbol;
         init_nft.seller_fee_basis = seller_fee_basis;
 
+        Ok(())
+    }
+
+    
+    pub fn buy(ctx : Context<BuyNFT>) -> Result<()> {
+        let nft_acc = &mut ctx.accounts.nft_acc;
+        
+        nft_acc.owner = *ctx.accounts.buyer.key;
 
         Ok(())
     }
@@ -50,6 +57,27 @@ pub struct CreateNFT<'info>{
     pub signer : Signer<'info>,
     pub system_program : Program<'info , System>
 }
+
+
+#[derive(Accounts)]
+pub struct BuyNFT<'info>{
+    #[account(
+        mut,
+        has_one = owner
+    )]
+
+    pub nft_acc : Account<'info , Nft>,
+
+    #[account(signer)]
+    /// CHECK: branded unsafe 
+    pub owner : AccountInfo<'info>,
+
+    #[account(mut)]
+    pub buyer : Signer<'info>,
+
+}
+
+
 
 
 #[account]
