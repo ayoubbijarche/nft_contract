@@ -40,17 +40,15 @@ pub mod nft_project {
 
         let cpi_ctx = CpiContext::new(
             program_id,
-            Transfer{
-                from : owner,
-                to : buyer,
+            Transfer {
+                from: owner,
+                to: buyer,
             },
-
         );
 
-        transfer(cpi_ctx , price);
-        
-        nft_acc.owner = ctx.accounts.buyer.key();
+        transfer(cpi_ctx, price);
 
+        nft_acc.owner = ctx.accounts.buyer.key();
 
         Ok(())
     }
@@ -67,7 +65,7 @@ pub struct CreateNFT<'info> {
 
     #[account(mut)]
     pub signer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[derive(Accounts)]
@@ -84,7 +82,7 @@ pub struct BuyNFT<'info> {
 
     #[account(mut)]
     pub buyer: Signer<'info>,
-    pub system_program: Program<'info, System>
+    pub system_program: Program<'info, System>,
 }
 
 #[account]
